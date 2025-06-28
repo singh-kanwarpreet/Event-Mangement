@@ -1,6 +1,7 @@
-import React from 'react'
-
-const NewEvents = () => {
+import { useContext, useState, useEffect } from 'react';
+import EventCard from '../../components/EventCard';
+import { EventContext } from '../../context/EventContext';
+const AllEvents = () => {
   const { allEvents } = useContext(EventContext);
   const [events, setEvents] = useState([]);
 
@@ -32,4 +33,4 @@ const NewEvents = () => {
   );
 }
 
-export default NewEvents
+export default AllEvents
