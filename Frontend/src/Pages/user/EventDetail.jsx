@@ -47,7 +47,6 @@ const EventDetail = () => {
           <a
             href={event.certificate}
             target="_blank"
-            rel="noopener noreferrer"
             className="text-blue-600 hover:underline break-all"
           >
             View Certificate
