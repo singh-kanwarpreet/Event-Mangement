@@ -1,22 +1,9 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import EventCard from '../../components/EventCard';
 import { EventContext } from '../../context/EventContext';
 const AllEvents = () => {
-  const { allEvents } = useContext(EventContext);
-  const [events, setEvents] = useState([]);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const data = await allEvents(); 
-        setEvents(data);
-      } catch (err) {
-        alert(err.message);
-      }
-    };
-
-    fetchEvents();
-  }, [allEvents]);
+  const {events} = useContext(EventContext);
+  
 
   if (events.length === 0) {
     return <p className="text-center mt-10 text-gray-600">No Data Found</p>;

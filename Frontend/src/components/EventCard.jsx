@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const EventCard = ({ data }) => {
   return (
     <div className="max-w-sm bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 transition hover:shadow-2xl">
@@ -15,7 +17,7 @@ const EventCard = ({ data }) => {
           {data.description}
         </p>
         <button className="bg-gradient-to-r from-indigo-500 to-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition">
-          Read More
+          <Link to={`/event/${data._id}`}>Read More</Link>
         </button>
       </div>
     </div>

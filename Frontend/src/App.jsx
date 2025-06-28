@@ -18,11 +18,12 @@ const App = () => {
   return (
     <>
     <Header/>
+    
     <Routes>
-          <Route path="/signUp" element={<SignUp />}></Route>
-          <Route path="/login" element={<Login />}></Route>
+          <Route path="/signUp" element={<SignUp/>}></Route>
+          <Route path="/login" element={<Login/>}></Route>
           <Route path="/events" element={<AllEvents/>}></Route>
-
+          <Route path="/event/:id" element={<EventDetail/>} />
       </Routes>
   
 </>

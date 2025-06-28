@@ -1,15 +1,26 @@
+import { useContext, useState, useEffect } from "react";
+import { EventContext } from "../../context/EventContext";
+import { useParams } from "react-router-dom";
+
 const EventDetail = () => {
-  // Sample static event data
-  const event = {
-    name: "Tech Innovation Conference 2025",
-    description:
-      "Join industry leaders for a day of insightful talks, networking, and hands-on workshops on the future of technology.",
-    image:
-      "https://thumbs.dreamstime.com/b/colorful-confetti-celebration-bright-pastel-background-creating-festive-atmosphere-unknown-event-occasion-364679215.jpg",
-    date: "2025-07-10T00:00:00Z",
-    time: "10:00 AM - 4:00 PM",
-    // certificate: "https://example.com/certificate.pdf",
-  };
+  const { id } = useParams();
+  const { eventsMap } = useContext(EventContext);
+  const [event, setEvent] = useState(null);
+
+  useEffect(() => {
+    const foundEvent = eventsMap.get(id);
+    if (foundEvent) {
+      setEvent(foundEvent);
+    }
+  }, [eventsMap, id]);
+
+  if (!event) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <p className="text-gray-600">Loading event or event not found...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md space-y-6 mt-10">
@@ -47,6 +58,7 @@ const EventDetail = () => {
           <a
             href={event.certificate}
             target="_blank"
+            rel="noopener noreferrer"
             className="text-blue-600 hover:underline break-all"
           >
             View Certificate
@@ -54,7 +66,7 @@ const EventDetail = () => {
         </div>
       )}
 
-      {/* Button for navigation */}
+      {/* Button */}
       <div className="text-left">
         <button className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition">
           Register
