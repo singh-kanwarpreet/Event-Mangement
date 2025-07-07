@@ -25,7 +25,7 @@ const UserNavbar = () => {
 
         {/* Desktop Links */}
         <ul className="hidden md:flex space-x-6 font-medium">
-          <li><Link to="/events" className="hover:underline">All Events</Link></li>
+          <li><Link to="/events" className="hover:underline">Home</Link></li>
           <li><Link to="/events/new" className="hover:underline">New</Link></li>
           <li><Link to="/events/past" className="hover:underline">Past</Link></li>
           <li><Link to="/events/registered" className="hover:underline">Registered</Link></li>

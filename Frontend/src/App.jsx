@@ -8,8 +8,8 @@ import Header from './components/Header'
 import {Routes, Route } from "react-router-dom";
 import AllEvents from './Pages/user/AllEvents'
 import NewEvents from './Pages/user/NewEvents'
-
-
+import PastEvents from './Pages/user/PastEvents'
+import RegisteredEvents from './Pages/user/RegisterdEvent'
 
 const App = () => {
   // <SignUp />
@@ -25,6 +25,8 @@ const App = () => {
           <Route path="/signUp" element={<SignUp/>}></Route>
           <Route path="/login" element={<Login/>}></Route>
           <Route path="/events/new" element={ <NewEvents/>}></Route>
+          <Route path="/events/past" element={ <PastEvents/>}></Route>
+          <Route path="/events/registered" element={<RegisteredEvents/>}></Route>
           <Route path="/events" element={<AllEvents/>}></Route>
           <Route path="/event/:id" element={<EventDetail/>} />
       </Routes>

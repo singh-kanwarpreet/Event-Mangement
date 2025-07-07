@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useMemo, useContext } from "react";
 import { allEvents, eventRegister } from "../api/events";
-import { eventsParticipated, registeredEvents } from "../api/user";
+import { registeredEvents } from "../api/user";
 import { AuthContext } from "./AuthProvider";
 
 export const EventContext = createContext();
