@@ -7,21 +7,24 @@ import EventDetail from './Pages/user/EventDetail'
 import Header from './components/Header'
 import {Routes, Route } from "react-router-dom";
 import AllEvents from './Pages/user/AllEvents'
+import NewEvents from './Pages/user/NewEvents'
 
 
 
 const App = () => {
   // <SignUp />
     // <Login/>
-  // <CreateEvent/>
+  // 
   // <EventDetail />
+
   return (
     <>
     <Header/>
-    
+    {/* <CreateEvent/> */}
     <Routes>
           <Route path="/signUp" element={<SignUp/>}></Route>
           <Route path="/login" element={<Login/>}></Route>
+          <Route path="/events/new" element={ <NewEvents/>}></Route>
           <Route path="/events" element={<AllEvents/>}></Route>
           <Route path="/event/:id" element={<EventDetail/>} />
       </Routes>

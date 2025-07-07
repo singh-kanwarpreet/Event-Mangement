@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { authFunction } from '../../context/AuthContext';
+import { AuthContext } from '../../context/AuthProvider';
 
 const SignUp = () => {
   const [userDetails, setUserDetails] = useState({
@@ -14,7 +14,7 @@ const SignUp = () => {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const { signup } = useContext(authFunction);
+  const { signup } = useContext(AuthContext);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -41,7 +41,7 @@ const SignUp = () => {
   };
 
   return (
-<div className="min-h-screen w-[100%] flex justify-center items-center bg-gradient-to-br from-indigo-500 to-purple-700">
+    <div className="min-h-screen w-[100%] flex justify-center items-center bg-gradient-to-br from-indigo-500 to-purple-700">
       <div className="bg-white mt-5 mb-5 p-8 rounded-2xl shadow-2xl w-full max-w-xl mx-auto">
         <h1 className="text-3xl font-bold text-center text-indigo-800 mb-6">Create Your Account</h1>
         <form className="space-y-4" onSubmit={submit}>

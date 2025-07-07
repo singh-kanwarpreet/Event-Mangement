@@ -1,35 +1,39 @@
-import React from 'react'
+import { useContext, useState, useEffect } from 'react';
+import { EventContext } from '../../context/EventProvider';
+import EventCard from '../../components/EventCard';
 
 const NewEvents = () => {
-  const { allEvents } = useContext(EventContext);
-  const [events, setEvents] = useState([]);
+    const [register, setRegister] = useState([]);
+    const { events, registered } = useContext(EventContext);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const data = await allEvents(); 
-        setEvents(data);
-      } catch (err) {
-        alert(err.message);
-      }
-    };
+    useEffect(() => {
+        setRegister(registered);
+    }, [registered]);
 
-    fetchEvents();
-  }, [allEvents]);
+    const now = new Date();
 
-  if (events.length === 0) {
-    return <p className="text-center mt-10 text-gray-600">No Data Found</p>;
-  }
+    return (
+        <div className="min-h-screen w-full bg-gray-50 p-6">
+            <h1 className="text-2xl font-bold text-indigo-800 mb-6">Upcoming Events</h1>
 
-  return (
-    <div className="min-h-screen w-full bg-gray-50 p-6">
-      <h1 className="text-2xl font-bold text-indigo-800 mb-6">Upcoming Events</h1>
+            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {events
+                    .filter(event => {
+                        const [hours, minutes] = event.time.split(':').map(Number);
+                        const eventDate = new Date(event.date);
+                        eventDate.setHours(hours, minutes, 0, 0);
 
-      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {events.map((event, index) =>(<EventCard key={index} data={event} />))}
-      </div>
-    </div>
-  );
-}
+                        const isUpcoming = eventDate > now;
+                        const isRegistered = register.includes(event._id);
 
-export default NewEvents
+                        return isUpcoming && !isRegistered;
+                    })
+                    .map(event => (
+                        <EventCard key={event._id} data={event} />
+                    ))}
+            </div>
+        </div>
+    );
+};
+
+export default NewEvents;

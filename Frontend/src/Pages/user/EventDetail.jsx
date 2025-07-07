@@ -1,18 +1,42 @@
 import { useContext, useState, useEffect } from "react";
-import { EventContext } from "../../context/EventContext";
+import { EventContext } from "../../context/EventProvider";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "../../context/AuthProvider";
 
 const EventDetail = () => {
   const { id } = useParams();
-  const { eventsMap } = useContext(EventContext);
+  const { eventsMap, eventRegister, registered, setRegistered  } = useContext(EventContext);
   const [event, setEvent] = useState(null);
+  const { isLogged } = useContext(AuthContext);
+  const [isAlreadyParticipant, setIsAlreadyParticipant] = useState(false);
 
-  useEffect(() => {
-    const foundEvent = eventsMap.get(id);
+useEffect(() => { 
+  setIsAlreadyParticipant(
+    Array.isArray(registered)
+      ? registered.map(String).includes(String(id))
+      : false
+  );
+}, [registered]);
+
+useEffect(() => {
+  const foundEvent = eventsMap.get(id);
     if (foundEvent) {
       setEvent(foundEvent);
     }
   }, [eventsMap, id]);
+
+  const handleSubmit = async () => {
+    try {
+      if (!!isLogged && !isAlreadyParticipant) {
+        await eventRegister(id, JSON.parse(localStorage.getItem("authCredentials")).token);
+        setRegistered((prev) => [...prev, id]);
+        alert("Successfully Registered");
+      }
+    } catch (err) {
+      console.log(err);
+      alert(err.message);
+    }
+  };
 
   if (!event) {
     return (
@@ -68,8 +92,17 @@ const EventDetail = () => {
 
       {/* Button */}
       <div className="text-left">
-        <button className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition">
-          Register
+        <button
+          onClick={handleSubmit}
+          className={`px-6 py-2 font-semibold rounded-md transition
+            ${
+              isLogged && !isAlreadyParticipant
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-gray-400 text-gray-700 cursor-not-allowed"
+            }`}
+          disabled={!isLogged || isAlreadyParticipant}
+        >
+          {isAlreadyParticipant ? "Already Registered" : "Register"}
         </button>
       </div>
     </div>

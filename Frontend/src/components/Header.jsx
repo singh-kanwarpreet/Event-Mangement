@@ -1,16 +1,15 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { authFunction } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthProvider";
 
 const UserNavbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const {isLogged,SetIsLogged} = useContext(authFunction);
+  const { isLogged, setIsLogged } = useContext(AuthContext);
 
   const handleLogout = () => {
     localStorage.removeItem("authCredentials");
-    SetIsLogged(false);
-    setLogin(false);
+    setIsLogged(false);
     setMobileOpen(false); 
   };
 

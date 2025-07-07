@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     class:{type:String, required: true},
     section:{type:String, required: true},
     crn:{type:Number, required: true, unique: true},
-    eventRegisterd:[{
+    eventRegistered:[{
        type : mongoose.Schema.Types.ObjectId, ref : 'Event'
     }]
     }

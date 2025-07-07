@@ -1,35 +1,34 @@
-import React, { useState,useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { login } from '../../api/auth';
 import { useNavigate } from "react-router-dom";
-import { authFunction } from '../../context/AuthContext';
+import { AuthContext } from '../../context/AuthProvider';
 
 const Login = () => {
-    const {isLogged,SetIsLogged} = useContext(authFunction);
+  const { isLogged, setIsLogged } = useContext(AuthContext);
   const [loginDetails, setLoginDetails] = useState({ email: "", password: "" });
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (isLogged) {
-      navigate("/"); 
+      navigate("/");
     }
-  }, []);
+  }, [isLogged, navigate]);
 
-  const submit = async(e) => {
-    try{
+  const submit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    await login(loginDetails)
-    SetIsLogged(true);
-    setLoginDetails({ email: "", password: "" });
-    setSubmitting(false);
-    navigate("/");
-    }
-    catch(err){
+    try {
+      await login(loginDetails);
+      setIsLogged(true);
+      setLoginDetails({ email: "", password: "" });
+      navigate("/");
+    } catch (err) {
       alert(err.message);
-      setSubmitting(false);
     }
+    setSubmitting(false);
   };
-    
+
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-gradient-to-br from-indigo-500 to-purple-700">
       <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md">
