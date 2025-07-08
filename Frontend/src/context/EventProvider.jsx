@@ -6,7 +6,7 @@ import { AuthContext } from "./AuthProvider";
 export const EventContext = createContext();
 
 const EventProvider = ({ children }) => {
-  const { isLogged } = useContext(AuthContext);
+  const { isLogged, role } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const [registered, setRegistered] = useState([]);
 
@@ -24,8 +24,8 @@ const EventProvider = ({ children }) => {
 
 
   useEffect(() => {
+    if (!isLogged || role != "user") return;
     const fetchRegisteredEvents = async () => {
-      if (!isLogged) return;
       try {
         const token = JSON.parse(localStorage.getItem("authCredentials")).token;
         const data = await registeredEvents(token);

@@ -1,16 +1,22 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { AuthContext } from "../context/AuthProvider";
+import { AuthContext } from "../../context/AuthProvider";
+import { EventContext } from "../../context/EventProvider";
 
 const UserNavbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { isLogged, setIsLogged } = useContext(AuthContext);
-
-  const handleLogout = () => {
+  const { isLogged, setIsLogged, setRole } = useContext(AuthContext);
+  const { setRegistered } = useContext(EventContext);
+  const navigate = useNavigate();
+  const handleLogout = (e) => {
+    e.preventDefault();
     localStorage.removeItem("authCredentials");
     setIsLogged(false);
     setMobileOpen(false); 
+    setRegistered([]); 
+    setRole("");
+    navigate("/login");
   };
 
   return (
@@ -18,7 +24,7 @@ const UserNavbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         {/* Logo */}
         <div>
-          <Link to="/" className="text-xl font-bold tracking-wide">
+          <Link to="/events" className="text-xl font-bold tracking-wide">
             Events
           </Link>
         </div>
@@ -69,7 +75,7 @@ const UserNavbar = () => {
       {/* Mobile Menu */}
       {mobileOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2">
-          <Link to="/events" className="block py-1 hover:underline" onClick={() => setMobileOpen(false)}>All Events</Link>
+          <Link to="/events" className="block py-1 hover:underline" onClick={() => setMobileOpen(false)}>Home</Link>
           <Link to="/events/new" className="block py-1 hover:underline" onClick={() => setMobileOpen(false)}>New</Link>
           <Link to="/events/past" className="block py-1 hover:underline" onClick={() => setMobileOpen(false)}>Past</Link>
           <Link to="/events/registered" className="block py-1 hover:underline" onClick={() => setMobileOpen(false)}>Registered</Link>

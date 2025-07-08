@@ -1,5 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthProvider';
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [userDetails, setUserDetails] = useState({
@@ -12,10 +13,22 @@ const SignUp = () => {
     section: "",
     crn: ""
   });
+  const { role } = useContext(AuthContext);
+    
+  const { isLogged, setIsLogged } = useContext(AuthContext);
+  useEffect(() => {
+      if (isLogged) {
+          if( role === "admin") {
+            navigate("/");
+          } else {
+            navigate("/events");
+          }
+      }
+    }, [isLogged]);
 
   const [submitting, setSubmitting] = useState(false);
-  const { signup } = useContext(AuthContext);
-
+  const { signup, setRole } = useContext(AuthContext);
+  const navigate = useNavigate();
   const submit = async (e) => {
     e.preventDefault();
     if (userDetails.password !== userDetails.confirmPassword) {
@@ -30,6 +43,14 @@ const SignUp = () => {
         name: "", email: "", password: "", confirmPassword: "",
         urn: "", class: "", section: "", crn: ""
       });
+      setRole(JSON.parse(localStorage.getItem("authCredentials")).role);
+      alert("Login successful");
+      setIsLogged(true);
+      if( role === "admin") {
+            navigate("/");
+          } else {
+            navigate("/events");
+     }
     } catch (err) {
       alert(err.message);
     }

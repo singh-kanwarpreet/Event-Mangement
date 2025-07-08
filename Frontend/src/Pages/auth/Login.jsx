@@ -4,16 +4,21 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../../context/AuthProvider';
 
 const Login = () => {
-  const { isLogged, setIsLogged } = useContext(AuthContext);
+  const { isLogged, setIsLogged, setRole } = useContext(AuthContext);
   const [loginDetails, setLoginDetails] = useState({ email: "", password: "" });
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { role } = useContext(AuthContext);
 
   useEffect(() => {
     if (isLogged) {
-      navigate("/");
+        if( role === "admin") {
+          navigate("/");
+        } else {
+          navigate("/events");
+        }
     }
-  }, [isLogged, navigate]);
+  }, [isLogged]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -22,7 +27,13 @@ const Login = () => {
       await login(loginDetails);
       setIsLogged(true);
       setLoginDetails({ email: "", password: "" });
-      navigate("/");
+      setRole(JSON.parse(localStorage.getItem("authCredentials")).role);
+      alert("Login successful");
+      if( role === "admin") {
+          navigate("/");
+        } else {
+          navigate("/events");
+        }
     } catch (err) {
       alert(err.message);
     }

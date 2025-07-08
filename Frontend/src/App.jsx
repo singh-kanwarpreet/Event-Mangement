@@ -1,39 +1,61 @@
-import React from 'react'
-import Login from './Pages/auth/Login'
-import SignUp from './Pages/auth/SignUp'
-import CreateEvent from './Pages/admin/CreateEvent'
-import EventCard from './components/EventCard'
-import EventDetail from './Pages/user/EventDetail'
-import Header from './components/Header'
-import {Routes, Route } from "react-router-dom";
-import AllEvents from './Pages/user/AllEvents'
-import NewEvents from './Pages/user/NewEvents'
-import PastEvents from './Pages/user/PastEvents'
-import RegisteredEvents from './Pages/user/RegisterdEvent'
+import { useContext } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { AuthContext } from './context/AuthProvider';
+
+import Login from './Pages/auth/Login';
+import SignUp from './Pages/auth/SignUp';
+import CreateEvent from './Pages/admin/CreateEvent';
+import EventDetail from './Pages/user/EventDetail';
+import Header from './Pages/user/UserHeader';
+import AllEvents from './Pages/user/AllEvents';
+import NewEvents from './Pages/user/NewEvents';
+import PastEvents from './Pages/user/PastEvents';
+import RegisteredEvents from './Pages/user/RegisterdEvent';
+import AdminNavbar from './Pages/admin/AdminNavbar';
+import AdminEventDetail from './Pages/admin/AdminEventDetail';
 
 const App = () => {
-  // <SignUp />
-    // <Login/>
-  // 
-  // <EventDetail />
+  const { role } = useContext(AuthContext);
 
   return (
     <>
-    <Header/>
-    {/* <CreateEvent/> */}
-    <Routes>
-          <Route path="/signUp" element={<SignUp/>}></Route>
-          <Route path="/login" element={<Login/>}></Route>
-          <Route path="/events/new" element={ <NewEvents/>}></Route>
-          <Route path="/events/past" element={ <PastEvents/>}></Route>
-          <Route path="/events/registered" element={<RegisteredEvents/>}></Route>
-          <Route path="/events" element={<AllEvents/>}></Route>
-          <Route path="/event/:id" element={<EventDetail/>} />
-      </Routes>
-  
-</>
+      
 
-  )
-}
+      <Routes>
+        <Route path="/signUp" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+      </Routes> 
+          {role === 'user' && (
+            <>
+              <Header />
+              <Routes>
+                <Route path="/events/new" element={<NewEvents />} />
+                <Route path="/events/past" element={<PastEvents />} />
+                <Route path="/events/registered" element={<RegisteredEvents />} />
+                <Route path="/events" element={<AllEvents />} />
+                <Route path="/event/:id" element={<EventDetail />} />
+              </Routes>
+            </>
+          )}
 
-export default App
+      {role === 'admin' && (
+        <> 
+          <AdminNavbar />
+          <Routes>
+            <Route path="/create-event" element={<CreateEvent />} />
+            <Route path="/" element={<AllEvents />} />
+            <Route path="/event/:id" element={<AdminEventDetail />} />
+          </Routes>
+        </>
+      )}
+        
+    </>
+  );
+};
+
+export default App;
+// Admin routes can be added here if needed
+// For example:
+// {role === 'admin' && (
+//   <Route path="/admin/events" element={<AdminEvents />} />
+// )}
