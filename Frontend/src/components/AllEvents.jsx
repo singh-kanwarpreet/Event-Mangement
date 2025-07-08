@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import EventCard from '../../components/EventCard';
-import { EventContext } from '../../context/EventProvider';
+import EventCard from './EventCard';
+import { EventContext } from '../context/EventProvider';
 
 const AllEvents = () => {
   const { events } = useContext(EventContext);

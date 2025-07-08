@@ -44,7 +44,7 @@ const EventProvider = ({ children }) => {
   }, [events]);
 
   return (
-    <EventContext.Provider value={{ events, eventsMap, eventRegister, registered, setRegistered }}>
+    <EventContext.Provider value={{ events, eventsMap, eventRegister, registered, setRegistered,setEvents }}>
       {children}
     </EventContext.Provider>
   );

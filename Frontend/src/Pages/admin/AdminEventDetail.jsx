@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { EventContext } from "../../context/EventProvider";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 
 const AdminEventDetail = () => {
@@ -70,16 +70,17 @@ useEffect(() => {
 
       {/* Button */}
       <div className="text-left">
-        <button
-          onClick={handleSubmit}
-          disabled={!isLogged}
-          className={`${!isLogged
+        <Link to={`/edit-event/${id}`}>
+          <button
+            disabled={!isLogged}
+            className={`${!isLogged
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 text-white"
           } font-semibold px-4 py-2 rounded transition`}
         >
           Edit
         </button>
+        </Link>
       </div>
     </div>
   );
