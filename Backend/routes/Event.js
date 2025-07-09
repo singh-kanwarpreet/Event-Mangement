@@ -20,7 +20,11 @@ router.post('/:id/register', async (req, res) => {
     try {
         const id = req.params.id;
         const { token } = req.body;
-
+        if (!token) {
+            return res.status(401).json({ message: "Unauthorized, please login" });
+        }
+        const date = new Date();
+        
         const decoded = jwt.verify(token, 'SECRETKEY');
         if (decoded.role !== 'user') {
             return res.status(403).json({ message: "Only users can register for events" });
@@ -30,8 +34,18 @@ router.post('/:id/register', async (req, res) => {
         if (!event) {
             return res.status(404).json({ message: "Event not found" });
         }
+        // Check if event date and time is in the future
+        if (!event.date || !event.time) {
+            return res.status(400).json({ message: "Event date and time are required" });
+        }
+        const [hours, minutes] = event.time.split(':').map(Number);
+        const eventDate = new Date(event.date);
+        eventDate.setHours(hours, minutes, 0, 0);
 
-        
+        if (eventDate < date) {
+            return res.status(400).json({ message: "Cannot register for past events" });
+        }
+
         if (!event.participants.includes(decoded.id)) {
             event.participants.push(decoded.id);
             await event.save();

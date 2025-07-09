@@ -9,26 +9,26 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
     urn: "",
-    class: "",
-    section: "",
+    branch: "",
+    year: "",
     crn: ""
   });
-  const { role } = useContext(AuthContext);
-    
-  const { isLogged, setIsLogged } = useContext(AuthContext);
+
+  const { role, isLogged, setIsLogged, signup, setRole } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   useEffect(() => {
-      if (isLogged) {
-          if( role === "admin") {
-            navigate("/");
-          } else {
-            navigate("/events");
-          }
+    if (isLogged) {
+      if (role === "admin") {
+        navigate("/");
+      } else {
+        navigate("/events");
       }
-    }, [isLogged]);
+    }
+  }, [isLogged]);
 
   const [submitting, setSubmitting] = useState(false);
-  const { signup, setRole } = useContext(AuthContext);
-  const navigate = useNavigate();
+
   const submit = async (e) => {
     e.preventDefault();
     if (userDetails.password !== userDetails.confirmPassword) {
@@ -41,16 +41,16 @@ const SignUp = () => {
       await signup(payload);
       setUserDetails({
         name: "", email: "", password: "", confirmPassword: "",
-        urn: "", class: "", section: "", crn: ""
+        urn: "", branch: "", year: "", crn: ""
       });
       setRole(JSON.parse(localStorage.getItem("authCredentials")).role);
       alert("Login successful");
       setIsLogged(true);
-      if( role === "admin") {
-            navigate("/");
-          } else {
-            navigate("/events");
-     }
+      if (role === "admin") {
+        navigate("/");
+      } else {
+        navigate("/events");
+      }
     } catch (err) {
       alert(err.message);
     }
@@ -137,32 +137,44 @@ const SignUp = () => {
             />
           </div>
 
+          {/* Branch Dropdown */}
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="class">Class</label>
-            <input
-              type="text"
-              name="class"
-              id="class"
-              value={userDetails.class}
+            <label className="block text-gray-800 font-medium mb-1" htmlFor="branch">Branch</label>
+            <select
+              name="branch"
+              id="branch"
+              value={userDetails.branch}
               onChange={handleChange}
-              placeholder="e.g. 10A"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
-            />
+            >
+              <option value="">Select Branch</option>
+              <option value="CSE">CSE</option>
+              <option value="IT">IT</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Electrical">Electrical</option>
+              <option value="Mech">Mech</option>
+              <option value="Civil">Civil</option>
+            </select>
           </div>
 
+          {/* Year Dropdown */}
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="section">Section</label>
-            <input
-              type="text"
-              name="section"
-              id="section"
-              value={userDetails.section}
+            <label className="block text-gray-800 font-medium mb-1" htmlFor="year">Year</label>
+            <select
+              name="year"
+              id="year"
+              value={userDetails.year}
               onChange={handleChange}
-              placeholder="e.g. A1"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
-            />
+            >
+              <option value="">Select Year</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">4th Year</option>
+            </select>
           </div>
 
           <div>

@@ -7,13 +7,31 @@ const jwt = require('jsonwebtoken');
 
 router.post('/signup', async (req, res) => {
   try {
-    const { name, email, password, urn, class: className, section, crn } = req.body;
+    const { name, email, password, urn, branch, year, crn } = req.body;
+
     const existing = await User.findOne({ email });
     if (existing) return res.status(409).json({ message: 'Email already exists' });
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ name, email, password: hashedPassword, urn, role: 'user', class: className, section, crn });
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      urn,
+      branch,
+      year,
+      crn,
+      role: 'user'
+    });
+
     const result = await user.save();
-    const token = jwt.sign({ id: result._id, email: result.email, role: result.role }, 'SECRETKEY',{ expiresIn: "7d" });
+    if (!result) return res.status(500).json({ message: 'User registration failed' });
+    const token = jwt.sign(
+      { id: result._id, email: result.email, role: result.role },
+      'SECRETKEY', 
+      { expiresIn: '7d' }
+    );
+
     res.json({ token, role: result.role });
   } catch (err) {
     res.status(500).json({ message: err.message });

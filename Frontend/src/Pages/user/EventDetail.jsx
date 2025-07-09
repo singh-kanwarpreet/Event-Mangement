@@ -5,29 +5,44 @@ import { AuthContext } from "../../context/AuthProvider";
 
 const EventDetail = () => {
   const { id } = useParams();
-  const { eventsMap, eventRegister, registered, setRegistered  } = useContext(EventContext);
-  const [event, setEvent] = useState(null);
+  const { eventsMap, eventRegister, registered, setRegistered } = useContext(EventContext);
   const { isLogged } = useContext(AuthContext);
+
+  const [event, setEvent] = useState(null);
   const [isAlreadyParticipant, setIsAlreadyParticipant] = useState(false);
+  const [isPastEvent, setIsPastEvent] = useState(false);
 
-useEffect(() => { 
-  setIsAlreadyParticipant(
-    Array.isArray(registered)
-      ? registered.map(String).includes(String(id))
-      : false
-  );
-}, [registered]);
+  // Check if already registered
+  useEffect(() => {
+    setIsAlreadyParticipant(
+      Array.isArray(registered)
+        ? registered.map(String).includes(String(id))
+        : false
+    );
+  }, [registered, id]);
 
-useEffect(() => {
-  const foundEvent = eventsMap.get(id);
+  // Load event details
+  useEffect(() => {
+    const foundEvent = eventsMap.get(id);
     if (foundEvent) {
       setEvent(foundEvent);
     }
   }, [eventsMap, id]);
 
+  // Check if event date & time has passed
+  useEffect(() => {
+    if (event?.date && event?.time) {
+      const [hours, minutes] = event.time.split(':').map(Number);
+      const eventDate = new Date(event.date);
+      eventDate.setHours(hours, minutes, 0, 0);
+      const now = new Date();
+      setIsPastEvent(eventDate < now);
+    }
+  }, [event]);
+
   const handleSubmit = async () => {
     try {
-      if (!!isLogged && !isAlreadyParticipant) {
+      if (!!isLogged && !isAlreadyParticipant && !isPastEvent) {
         await eventRegister(id, JSON.parse(localStorage.getItem("authCredentials")).token);
         setRegistered((prev) => [...prev, id]);
         alert("Successfully Registered");
@@ -96,13 +111,17 @@ useEffect(() => {
           onClick={handleSubmit}
           className={`px-6 py-2 font-semibold rounded-md transition
             ${
-              isLogged && !isAlreadyParticipant
+              isLogged && !isAlreadyParticipant && !isPastEvent
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-gray-400 text-gray-700 cursor-not-allowed"
             }`}
-          disabled={!isLogged || isAlreadyParticipant}
+          disabled={!isLogged || isAlreadyParticipant || isPastEvent}
         >
-          {isAlreadyParticipant ? "Already Registered" : "Register"}
+          {isPastEvent
+            ? "Event Over"
+            : isAlreadyParticipant
+            ? "Already Registered"
+            : "Register"}
         </button>
       </div>
     </div>
