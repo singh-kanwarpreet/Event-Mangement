@@ -5,11 +5,35 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 // GET all events
-router.get('/show', async (req, res) => {
+router.post('/show', async (req, res) => {
     try {
-        const events = await Event.find();
+        const { token } = req.body;
+        if (!token) {
+            return res.status(401).json({ message: "Unauthorized, please login" });
+        }
+
+        const decoded = jwt.verify(token, 'SECRETKEY');
+
+        if (decoded.role !== 'admin' && decoded.role !== 'user') {
+            return res.status(403).json({ message: "Only admins and users can view events" });
+        }
+        if( decoded.role === 'admin') {
+            const events = await Event.find();
+            return res.json(events);
+        }
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        console.log(user.branch, user.year);
+        const events = await Event.find({
+            degrees: user.branch,
+            years: user.year
+        });
+
         res.json(events);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Something went wrong' });
     }
 });

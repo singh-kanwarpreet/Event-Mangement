@@ -5,12 +5,13 @@ import { AuthContext } from "../../context/AuthProvider";
 
 const AdminEventDetail = () => {
   const { id } = useParams();
-  const { eventsMap, eventRegister, registered, setRegistered  } = useContext(EventContext);
-  const [event, setEvent] = useState(null);
+  const { eventsMap } = useContext(EventContext);
   const { isLogged } = useContext(AuthContext);
 
-useEffect(() => {
-  const foundEvent = eventsMap.get(id);
+  const [event, setEvent] = useState(null);
+
+  useEffect(() => {
+    const foundEvent = eventsMap.get(id);
     if (foundEvent) {
       setEvent(foundEvent);
     }
@@ -53,6 +54,26 @@ useEffect(() => {
         </div>
       </div>
 
+      {/* Degrees */}
+      {Array.isArray(event.degrees) && event.degrees.length > 0 && (
+        <div className="bg-gray-50 p-4 rounded-md border">
+          <p className="text-gray-600 text-sm mb-1">Eligible Degrees</p>
+          <p className="text-gray-800 font-semibold">
+            {event.degrees.join(", ")}
+          </p>
+        </div>
+      )}
+
+      {/* Years */}
+      {Array.isArray(event.years) && event.years.length > 0 && (
+        <div className="bg-gray-50 p-4 rounded-md border">
+          <p className="text-gray-600 text-sm mb-1">Eligible Years</p>
+          <p className="text-gray-800 font-semibold">
+            {event.years.join(", ")}
+          </p>
+        </div>
+      )}
+
       {/* Certificate */}
       {event.certificate && (
         <div className="bg-gray-50 p-4 rounded-md border">
@@ -68,18 +89,19 @@ useEffect(() => {
         </div>
       )}
 
-      {/* Button */}
+      {/* Edit Button */}
       <div className="text-left">
         <Link to={`/edit-event/${id}`}>
           <button
             disabled={!isLogged}
-            className={`${!isLogged
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-indigo-600 hover:bg-indigo-700 text-white"
-          } font-semibold px-4 py-2 rounded transition`}
-        >
-          Edit
-        </button>
+            className={`${
+              !isLogged
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700 text-white"
+            } font-semibold px-4 py-2 rounded transition`}
+          >
+            Edit
+          </button>
         </Link>
       </div>
     </div>

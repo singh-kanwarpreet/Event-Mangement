@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   year: {
     type: String,
     required: true,
-    enum: ['1', '2', '3', '4'],
+    enum: ['1st', '2nd', '3rd', '4th'],
   },
 
   role: {

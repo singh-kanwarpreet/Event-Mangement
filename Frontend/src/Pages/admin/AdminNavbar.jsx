@@ -7,7 +7,7 @@ import { EventContext } from "../../context/EventProvider";
 const AdminNavbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isLogged, setIsLogged, setRole } = useContext(AuthContext);
-  const { setRegistered } = useContext(EventContext);
+  const { setRegistered,setEvents,setEventsMap} = useContext(EventContext);
   const navigate = useNavigate();
 
   const handleLogout = (e) => {
@@ -16,6 +16,8 @@ const AdminNavbar = () => {
     setIsLogged(false);
     setMobileOpen(false);
     setRegistered([]);
+    setEvents([]);
+    setEventsMap(new Map());
     setRole("");
     navigate("/login");
   };

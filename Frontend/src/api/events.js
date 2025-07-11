@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const allEvents = async () => {
+export const allEvents = async (token) => {
   try {
-    const response = await axios.get("http://localhost:3030/event/show");
+    const response = await axios.post("http://localhost:3030/event/show", { token });
     return response.data;
   } catch (error) {
     throw error;

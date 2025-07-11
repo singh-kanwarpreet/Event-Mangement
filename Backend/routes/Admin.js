@@ -3,26 +3,51 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const Event = require('../models/Event');
 
+const DEGREE_OPTIONS = ['CSE', 'IT', 'Mechanical', 'Civil', 'Electrical', 'Electronics'];
+const YEAR_OPTIONS = ['1st', '2nd', '3rd', '4th'];
+
 router.post('/upload', async (req, res) => {
     try {
-        const { name, description, date, time, token,image } = req.body;
+        const { name, description, date, time, token, image, degrees, years } = req.body;
 
         const decoded = jwt.verify(token, 'SECRETKEY');
         if (decoded.role !== 'admin') {
             return res.status(403).json({ message: "Only admins can create events" });
         }
 
-        const event = new Event({
+        if (!name || !description || !date || !time || !degrees || !years) {
+            return res.status(400).json({ message: "All fields including degrees and years are required." });
+        }
+
+        for (const degree of degrees) {
+            if (!DEGREE_OPTIONS.includes(degree)) {
+                return res.status(400).json({ message: `Invalid degree: ${degree}` });
+            }
+        }
+        for (const year of years) {
+            if (!YEAR_OPTIONS.includes(year)) {
+                return res.status(400).json({ message: `Invalid year: ${year}` });
+            }
+        }
+
+        const eventData = {
             name,
             description,
             date,
             time,
-            image,
+            degrees,
+            years,
             createdBy: decoded.id
-        });
+        };
 
+        if (image) {
+            eventData.image = image;
+        }
+
+        const event = new Event(eventData);
         const response = await event.save();
         return res.json({ message: response });
+
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({ message: 'Token expired, please log in again' });
@@ -33,32 +58,46 @@ router.post('/upload', async (req, res) => {
 
 router.post('/edit', async (req, res) => {
     try {
-        const { id, name, description, date, time, certificate, token,image } = req.body;
+        const { id, name, description, date, time, certificate, token, image, degrees, years } = req.body;
 
         const decoded = jwt.verify(token, 'SECRETKEY');
         if (decoded.role !== 'admin') {
             return res.status(403).json({ message: "Only admins can edit events" });
         }
 
-        // Validate required fields
-        if (!id || !name || !description || !date || !time) {
-            return res.status(400).json({ message: "All fields are required." });
+        if (!id || !name || !description || !date || !time || !degrees || !years) {
+            return res.status(400).json({ message: "All fields including degrees and years are required." });
         }
 
-        const event = {
+        for (const degree of degrees) {
+            if (!DEGREE_OPTIONS.includes(degree)) {
+                return res.status(400).json({ message: `Invalid degree: ${degree}` });
+            }
+        }
+        for (const year of years) {
+            if (!YEAR_OPTIONS.includes(year)) {
+                return res.status(400).json({ message: `Invalid year: ${year}` });
+            }
+        }
+
+        const eventData = {
             name,
             description,
             date,
             time,
-            image,
             certificate,
+            degrees,
+            years,
             createdBy: decoded.id
         };
 
-        await Event.findByIdAndUpdate(id, event);
+        if (image) {
+            eventData.image = image; 
+        }
 
+        await Event.findByIdAndUpdate(id, eventData);
         return res.json({ message: "Event updated successfully" });
-        
+
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({ message: 'Token expired, please log in again' });
@@ -68,4 +107,3 @@ router.post('/edit', async (req, res) => {
 });
 
 module.exports = router;
-

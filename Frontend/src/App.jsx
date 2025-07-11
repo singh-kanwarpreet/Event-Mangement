@@ -14,6 +14,7 @@ import RegisteredEvents from './Pages/user/RegisterdEvent';
 import AdminNavbar from './Pages/admin/AdminNavbar';
 import AdminEventDetail from './Pages/admin/AdminEventDetail';
 import EditEvent from './Pages/admin/EditEvent';
+import EventStatistics from './Pages/admin/EventStatistics';
 
 const App = () => {
   const { role } = useContext(AuthContext);
@@ -22,7 +23,7 @@ const App = () => {
     <>
       {role === 'user' && <Header />}
       {role === 'admin' && <AdminNavbar />}
-
+      {/* <EventStatistics/> */}
       <Routes>
         {/* Public routes */}
         <Route path="/signUp" element={<SignUp />} />

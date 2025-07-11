@@ -8,7 +8,7 @@ router.post("/registered", async (req, res) => {
         const { token } = req.body;
         const decoded = jwt.verify(token, 'SECRETKEY');
 
-        if (decoded.role !== 'user' && decoded.role !== 'admin') {
+        if (decoded.role !== 'user') {
             return res.status(403).json({ message: "Not Authorized" });
         }
 
