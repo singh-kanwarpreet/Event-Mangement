@@ -106,4 +106,55 @@ router.post('/edit', async (req, res) => {
     }
 });
 
+router.post('/delete', async (req, res) => {
+    try {
+        const { id, token } = req.body;
+
+        const decoded = jwt.verify(token, 'SECRETKEY');
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ message: "Only admins can delete events" });
+        }
+
+        const event = await Event.findByIdAndDelete(id);
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+
+        res.json({ message: "Event deleted successfully" });
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Token expired, please log in again' });
+        }
+        res.status(500).json({ message: err.message });
+    }
+});
+
+router.get('/event/:id/participants', async (req, res) => {
+    try {
+        const eventId = req.params.id;
+
+        const event = await Event.findById(eventId).populate('participants', 'name email crn urn branch year');
+
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+
+        let yearParticipation = {};
+
+        event.participants.forEach(participant => {
+            const year = participant.year;
+            if (!yearParticipation[year]) {
+                yearParticipation[year] = [];
+            }
+            yearParticipation[year].push(participant);
+        });
+
+        res.json(yearParticipation );
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
 module.exports = router;

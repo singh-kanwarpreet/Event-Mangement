@@ -25,7 +25,6 @@ router.post('/show', async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        console.log(user.branch, user.year);
         const events = await Event.find({
             degrees: user.branch,
             years: user.year

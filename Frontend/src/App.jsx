@@ -47,6 +47,7 @@ const App = () => {
             <Route path="/" element={<AllEvents />} />
             <Route path="/event/:id" element={<AdminEventDetail />} />
             <Route path="/edit-event/:id" element={<EditEvent />} />
+            <Route path="/event/:id/statistics" element={<EventStatistics />} />
           </>
         )}
       </Routes>
