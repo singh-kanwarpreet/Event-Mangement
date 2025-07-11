@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthContext } from './context/AuthProvider';
-
+import { Navigate } from 'react-router-dom';
 import Login from './Pages/auth/Login';
 import SignUp from './Pages/auth/SignUp';
 import CreateEvent from './Pages/admin/CreateEvent';
@@ -50,6 +50,7 @@ const App = () => {
             <Route path="/event/:id/statistics" element={<EventStatistics />} />
           </>
         )}
+      <Route path="*" element={<Navigate to="/login" replace />} />  
       </Routes>
     </>
   );

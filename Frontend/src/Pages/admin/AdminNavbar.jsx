@@ -135,5 +135,4 @@ const AdminNavbar = () => {
 };
 
 export default AdminNavbar;
-// This code defines a responsive navigation bar for an admin panel in a React application.
-// It includes links to create, view, edit events, and logout functionality.    
+    

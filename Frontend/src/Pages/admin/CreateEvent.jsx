@@ -65,10 +65,10 @@ const CreateEvent = () => {
   const yearsList = ["1st", "2nd", "3rd", "4th"];
 
   return (
-    <div className="h-screen w-full flex justify-center py-2 items-center bg-gradient-to-br from-indigo-500 to-purple-700">
+    <div className="min-h-screen w-full flex justify-center py-2 items-center bg-gradient-to-br from-indigo-500 to-purple-700">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-xl w-230 space-y-6"
+        className="bg-white p-8 mb-7 rounded-xl shadow-xl w-230 space-y-6"
       >
         <h2 className="text-2xl font-bold text-center text-indigo-700">
           Create New Event

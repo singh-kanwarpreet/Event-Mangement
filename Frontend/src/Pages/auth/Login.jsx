@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { login } from '../../api/auth';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from '../../context/AuthProvider';
 
 const Login = () => {
@@ -12,11 +12,11 @@ const Login = () => {
 
   useEffect(() => {
     if (isLogged) {
-        if( role === "admin") {
-          navigate("/");
-        } else {
-          navigate("/events");
-        }
+      if (role === "admin") {
+        navigate("/");
+      } else {
+        navigate("/events");
+      }
     }
   }, [isLogged]);
 
@@ -29,11 +29,11 @@ const Login = () => {
       setLoginDetails({ email: "", password: "" });
       setRole(JSON.parse(localStorage.getItem("authCredentials")).role);
       alert("Login successful");
-      if( role === "admin") {
-          navigate("/");
-        } else {
-          navigate("/events");
-        }
+      if (role === "admin") {
+        navigate("/");
+      } else {
+        navigate("/events");
+      }
     } catch (err) {
       alert(err.message);
     }
@@ -81,6 +81,13 @@ const Login = () => {
           >
             {submitting ? 'Submitting...' : 'Sign In'}
           </button>
+
+          <p className="text-center text-sm text-gray-600 mt-4">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-indigo-600 hover:underline font-medium">
+              Sign up here
+            </Link>
+          </p>
         </form>
       </div>
     </div>

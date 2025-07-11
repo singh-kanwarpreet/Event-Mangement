@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { AuthContext } from '../../context/AuthProvider';
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { AuthContext } from "../../context/AuthProvider";
+import { useNavigate,Link } from "react-router-dom";
 
 const SignUp = () => {
   const [userDetails, setUserDetails] = useState({
@@ -11,10 +11,11 @@ const SignUp = () => {
     urn: "",
     branch: "",
     year: "",
-    crn: ""
+    crn: "",
   });
 
-  const { role, isLogged, setIsLogged, signup, setRole } = useContext(AuthContext);
+  const { role, isLogged, setIsLogged, signup, setRole } =
+    useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,8 +41,14 @@ const SignUp = () => {
       const { confirmPassword, ...payload } = userDetails;
       await signup(payload);
       setUserDetails({
-        name: "", email: "", password: "", confirmPassword: "",
-        urn: "", branch: "", year: "", crn: ""
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        urn: "",
+        branch: "",
+        year: "",
+        crn: "",
       });
       setRole(JSON.parse(localStorage.getItem("authCredentials")).role);
       alert("Login successful");
@@ -64,11 +71,17 @@ const SignUp = () => {
   return (
     <div className="min-h-screen w-[100%] flex justify-center items-center bg-gradient-to-br from-indigo-500 to-purple-700">
       <div className="bg-white mt-5 mb-5 p-8 rounded-2xl shadow-2xl w-full max-w-xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-indigo-800 mb-6">Create Your Account</h1>
+        <h1 className="text-3xl font-bold text-center text-indigo-800 mb-6">
+          Create Your Account
+        </h1>
         <form className="space-y-4" onSubmit={submit}>
-
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="name">Name</label>
+            <label
+              className="block text-gray-800 font-medium mb-1"
+              htmlFor="name"
+            >
+              Name
+            </label>
             <input
               type="text"
               name="name"
@@ -82,7 +95,12 @@ const SignUp = () => {
           </div>
 
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="email">Email</label>
+            <label
+              className="block text-gray-800 font-medium mb-1"
+              htmlFor="email"
+            >
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -96,7 +114,12 @@ const SignUp = () => {
           </div>
 
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="password">Password</label>
+            <label
+              className="block text-gray-800 font-medium mb-1"
+              htmlFor="password"
+            >
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -110,7 +133,12 @@ const SignUp = () => {
           </div>
 
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="confirmPassword">Confirm Password</label>
+            <label
+              className="block text-gray-800 font-medium mb-1"
+              htmlFor="confirmPassword"
+            >
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -124,7 +152,12 @@ const SignUp = () => {
           </div>
 
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="urn">URN</label>
+            <label
+              className="block text-gray-800 font-medium mb-1"
+              htmlFor="urn"
+            >
+              URN
+            </label>
             <input
               type="number"
               name="urn"
@@ -139,7 +172,12 @@ const SignUp = () => {
 
           {/* Branch Dropdown */}
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="branch">Branch</label>
+            <label
+              className="block text-gray-800 font-medium mb-1"
+              htmlFor="branch"
+            >
+              Branch
+            </label>
             <select
               name="branch"
               id="branch"
@@ -160,7 +198,12 @@ const SignUp = () => {
 
           {/* Year Dropdown */}
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="year">Year</label>
+            <label
+              className="block text-gray-800 font-medium mb-1"
+              htmlFor="year"
+            >
+              Year
+            </label>
             <select
               name="year"
               id="year"
@@ -178,7 +221,12 @@ const SignUp = () => {
           </div>
 
           <div>
-            <label className="block text-gray-800 font-medium mb-1" htmlFor="crn">CRN</label>
+            <label
+              className="block text-gray-800 font-medium mb-1"
+              htmlFor="crn"
+            >
+              CRN
+            </label>
             <input
               type="number"
               name="crn"
@@ -190,12 +238,21 @@ const SignUp = () => {
               required
             />
           </div>
+          <p className="text-center text-sm text-gray-600 mt-4">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-purple-700 hover:underline font-medium"
+            >
+              Sign in here
+            </Link>
+          </p>
 
           <button
             disabled={submitting}
             className="w-full bg-purple-700 text-white font-semibold py-2 rounded-lg hover:bg-purple-800 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            {submitting ? 'Submitting...' : 'Sign Up'}
+            {submitting ? "Submitting..." : "Sign Up"}
           </button>
         </form>
       </div>
