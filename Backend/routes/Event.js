@@ -69,11 +69,16 @@ router.post('/:id/register', async (req, res) => {
         if (eventDate < date) {
             return res.status(400).json({ message: "Cannot register for past events" });
         }
-
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        if (!event.degrees.includes(user.branch) || !event.years.includes(user.year)) {
+            return res.status(403).json({ message: "User not eligible for this event" });
+        }
         if (!event.participants.includes(decoded.id)) {
             event.participants.push(decoded.id);
             await event.save();
-            const user = await User.findById(decoded.id);
             user.eventRegistered.push(id);
             await user.save();
             return res.json({ message: "Registered successfully" });
