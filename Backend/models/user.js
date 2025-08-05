@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   branch: {
     type: String,
     required: true,
-    enum: ['CSE', 'IT', 'Electronics', 'Electrical', 'Mech', 'Civil'],
+    enum: ['CSE', 'IT', 'Electronics', 'Electrical', 'Mechanical', 'Civil'],
   },
 
   year: {

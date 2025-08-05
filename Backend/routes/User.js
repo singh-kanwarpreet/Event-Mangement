@@ -5,7 +5,13 @@ let User = require('../models/user');
 
 router.post("/registered", async (req, res) => {
     try {
-        const { token } = req.body;
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "No token provided" });
+        }
+
+        const token = authHeader.split(" ")[1];
         const decoded = jwt.verify(token, 'SECRETKEY');
 
         if (decoded.role !== 'user') {
@@ -27,7 +33,5 @@ router.post("/registered", async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
-
-
 
 module.exports = router;

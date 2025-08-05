@@ -28,7 +28,6 @@ const Login = () => {
       setIsLogged(true);
       setLoginDetails({ email: "", password: "" });
       setRole(JSON.parse(localStorage.getItem("authCredentials")).role);
-      alert("Login successful");
       if (role === "admin") {
         navigate("/");
       } else {

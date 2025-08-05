@@ -6,15 +6,36 @@ const Event = require('../models/Event');
 const DEGREE_OPTIONS = ['CSE', 'IT', 'Mechanical', 'Civil', 'Electrical', 'Electronics'];
 const YEAR_OPTIONS = ['1st', '2nd', '3rd', '4th'];
 
-router.post('/upload', async (req, res) => {
+// Middleware to verify admin
+const verifyAdmin = (req, res, next) => {
     try {
-        const { name, description, date, time, token, image, degrees, years } = req.body;
-
-        const decoded = jwt.verify(token, 'SECRETKEY');
-        if (decoded.role !== 'admin') {
-            return res.status(403).json({ message: "Only admins can create events" });
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: "No or invalid token provided" });
         }
 
+        const token = authHeader.split(" ")[1];
+        const decoded = jwt.verify(token, 'SECRETKEY');
+
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ message: "Only admins can access this route" });
+        }
+
+        req.user = decoded;
+        next();
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Token expired, please log in again' });
+        }
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+};
+
+// Upload Event
+router.post('/upload', verifyAdmin, async (req, res) => {
+    try {
+        const { name, description, date, time, image, degrees, years } = req.body.data;
+       
         if (!name || !description || !date || !time || !degrees || !years) {
             return res.status(400).json({ message: "All fields including degrees and years are required." });
         }
@@ -37,7 +58,7 @@ router.post('/upload', async (req, res) => {
             time,
             degrees,
             years,
-            createdBy: decoded.id
+            createdBy: req.user.id
         };
 
         if (image) {
@@ -46,24 +67,17 @@ router.post('/upload', async (req, res) => {
 
         const event = new Event(eventData);
         const response = await event.save();
-        return res.json({ message: response });
 
+        return res.json({ message: response });
     } catch (err) {
-        if (err.name === 'TokenExpiredError') {
-            return res.status(401).json({ message: 'Token expired, please log in again' });
-        }
         res.status(500).json({ message: err.message });
     }
 });
 
-router.post('/edit', async (req, res) => {
+// Edit Event
+router.post('/edit', verifyAdmin, async (req, res) => {
     try {
-        const { id, name, description, date, time, certificate, token, image, degrees, years } = req.body;
-
-        const decoded = jwt.verify(token, 'SECRETKEY');
-        if (decoded.role !== 'admin') {
-            return res.status(403).json({ message: "Only admins can edit events" });
-        }
+        const { id, name, description, date, time, certificate, image, degrees, years } = req.body;
 
         if (!id || !name || !description || !date || !time || !degrees || !years) {
             return res.status(400).json({ message: "All fields including degrees and years are required." });
@@ -88,32 +102,25 @@ router.post('/edit', async (req, res) => {
             certificate,
             degrees,
             years,
-            createdBy: decoded.id
+            createdBy: req.user.id
         };
 
         if (image) {
-            eventData.image = image; 
+            eventData.image = image;
         }
 
-        await Event.findByIdAndUpdate(id, eventData);
-        return res.json({ message: "Event updated successfully" });
+        const updatedEvent = await Event.findByIdAndUpdate(id, eventData, { new: true });
 
+        return res.json({ message: "Event updated successfully", updatedEvent });
     } catch (err) {
-        if (err.name === 'TokenExpiredError') {
-            return res.status(401).json({ message: 'Token expired, please log in again' });
-        }
         res.status(500).json({ message: err.message });
     }
 });
 
-router.post('/delete', async (req, res) => {
+// Delete Event
+router.post('/delete', verifyAdmin, async (req, res) => {
     try {
-        const { id, token } = req.body;
-
-        const decoded = jwt.verify(token, 'SECRETKEY');
-        if (decoded.role !== 'admin') {
-            return res.status(403).json({ message: "Only admins can delete events" });
-        }
+        const { id } = req.body;
 
         const event = await Event.findByIdAndDelete(id);
         if (!event) {
@@ -122,13 +129,11 @@ router.post('/delete', async (req, res) => {
 
         res.json({ message: "Event deleted successfully" });
     } catch (err) {
-        if (err.name === 'TokenExpiredError') {
-            return res.status(401).json({ message: 'Token expired, please log in again' });
-        }
         res.status(500).json({ message: err.message });
     }
 });
 
+//Get Participants of an Event
 router.get('/event/:id/participants', async (req, res) => {
     try {
         const eventId = req.params.id;
@@ -149,12 +154,10 @@ router.get('/event/:id/participants', async (req, res) => {
             yearParticipation[year].push(participant);
         });
 
-        res.json(yearParticipation );
-
+        res.json(yearParticipation);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
-
 
 module.exports = router;
