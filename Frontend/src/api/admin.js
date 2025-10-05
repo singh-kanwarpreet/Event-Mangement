@@ -41,9 +41,35 @@ export const deleteEvent = async (id, token) => {
   }
 };
 
+export const sendCertificate = async (id, token) => {
+  try {
+    const response = await api.post("/send-certificate", { id }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.message;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || err.message);
+  }
+};
+
 export const EventParticipants = async (eventId) => {
   try {
     const response = await api.get(`/event/${eventId}/participants`);
+    return response.data;
+  } catch (err) {
+    throw new Error(err.response?.data?.message || err.message);
+  }
+};
+
+export const updateAttendance = async (eventId, participants, token) => {
+  try {
+    const response = await api.put(`/update-attendance`, { eventId, participants }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (err) {
     throw new Error(err.response?.data?.message || err.message);

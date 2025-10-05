@@ -2,11 +2,11 @@ import { useContext, useState, useEffect } from "react";
 import { EventContext } from "../../context/EventProvider";
 import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
-import { deleteEvent } from "../../api/admin";
-import { useNavigate } from "react-router-dom"; 
+import { deleteEvent,sendCertificate } from "../../api/admin";
+import { useNavigate } from "react-router-dom";
 const AdminEventDetail = () => {
   const { id } = useParams();
-  const { eventsMap, setEventsMap,setEvents} = useContext(EventContext);
+  const { eventsMap, setEventsMap, setEvents } = useContext(EventContext);
   const { isLogged } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -28,27 +28,50 @@ const AdminEventDetail = () => {
   }
 
   const handleDelete = async () => {
-  if (!window.confirm("Are you sure you want to delete this event?")) return;
-  try {
-    const tokenData = JSON.parse(localStorage.getItem("authCredentials"));
-    if (!tokenData) {
-      alert("You need to log in first.");
-      return;
-    }
-    await deleteEvent(id, tokenData.token);
-    setEventsMap((prevMap) => {
-      const newMap = new Map(prevMap);
-      newMap.delete(id);
-      return newMap;
-    });
-    setEvents((prevEvents) => prevEvents.filter((event) => event._id !== id));
-    alert("Event deleted successfully.");
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+    try {
+      const tokenData = JSON.parse(localStorage.getItem("authCredentials"));
+      if (!tokenData) {
+        alert("You need to log in first.");
+        return;
+      }
+      await deleteEvent(id, tokenData.token);
+      setEventsMap((prevMap) => {
+        const newMap = new Map(prevMap);
+        newMap.delete(id);
+        return newMap;
+      });
+      setEvents((prevEvents) => prevEvents.filter((event) => event._id !== id));
+      alert("Event deleted successfully.");
 
-    navigate("/"); 
-  } catch (err) {
-    alert(err.message);
-  }
-};
+      navigate("/");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleSendCertificate = async () => {
+    if (!window.confirm("Are you sure you want to send the certificate for this event?")) return;
+    try {
+      const tokenData = JSON.parse(localStorage.getItem("authCredentials"));
+      if (!tokenData) {
+        alert("You need to log in first.");
+        return;
+      }
+      await sendCertificate(id, tokenData.token);
+      if (eventsMap.has(id)) {
+        const updatedEvent = { ...eventsMap.get(id), certificate: true };
+        eventsMap.set(id, updatedEvent);
+        setEventsMap(new Map(eventsMap));
+      }
+      setEvent((prevEvent) =>
+        prevEvent ? { ...prevEvent, certificate: true } : null
+      );
+      alert("Certificate sent successfully.");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md space-y-6 mt-10">
@@ -99,21 +122,6 @@ const AdminEventDetail = () => {
         </div>
       )}
 
-      {/* Certificate */}
-      {event.certificate && (
-        <div className="bg-gray-50 p-4 rounded-md border">
-          <p className="text-gray-600 text-sm mb-1">Certificate</p>
-          <a
-            href={event.certificate}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline break-all"
-          >
-            View Certificate
-          </a>
-        </div>
-      )}
-
       {/* Edit, View, and Delete Buttons */}
       <div className="text-left">
         <div className="flex flex-wrap gap-2">
@@ -130,6 +138,19 @@ const AdminEventDetail = () => {
               Edit
             </button>
           </Link>
+
+          {/* Certificate */}
+          <button
+            disabled={!isLogged || event.certificate}
+            onClick={handleSendCertificate}
+            className={`${
+              !isLogged || event.certificate
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700 text-white"
+            } font-semibold px-4 py-2 rounded transition`}
+          >
+            Send Certificate
+          </button>
 
           {/* Statistics Button */}
           <Link to={`/event/${id}/statistics`}>
@@ -148,7 +169,7 @@ const AdminEventDetail = () => {
           {/* Delete Button */}
           <button
             disabled={!isLogged}
-            onClick={handleDelete} 
+            onClick={handleDelete}
             className={`${
               !isLogged
                 ? "bg-gray-400 cursor-not-allowed"

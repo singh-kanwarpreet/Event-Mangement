@@ -5,7 +5,8 @@ import { AuthContext } from "../../context/AuthProvider";
 
 const EventDetail = () => {
   const { id } = useParams();
-  const { eventsMap, eventRegister, registered, setRegistered } = useContext(EventContext);
+  const { eventsMap, eventRegister, registered, setRegistered } =
+    useContext(EventContext);
   const { isLogged } = useContext(AuthContext);
 
   const [event, setEvent] = useState(null);
@@ -32,7 +33,7 @@ const EventDetail = () => {
   // Check if event date & time has passed
   useEffect(() => {
     if (event?.date && event?.time) {
-      const [hours, minutes] = event.time.split(':').map(Number);
+      const [hours, minutes] = event.time.split(":").map(Number);
       const eventDate = new Date(event.date);
       eventDate.setHours(hours, minutes, 0, 0);
       const now = new Date();
@@ -43,7 +44,10 @@ const EventDetail = () => {
   const handleSubmit = async () => {
     try {
       if (!!isLogged && !isAlreadyParticipant && !isPastEvent) {
-        await eventRegister(id, JSON.parse(localStorage.getItem("authCredentials")).token);
+        await eventRegister(
+          id,
+          JSON.parse(localStorage.getItem("authCredentials")).token
+        );
         setRegistered((prev) => [...prev, id]);
         alert("Successfully Registered");
       }
@@ -52,6 +56,11 @@ const EventDetail = () => {
       alert(err.message);
     }
   };
+
+  const handleDownloadCertificate = () => {
+    // Implement certificate download logic here
+    alert("Certificate download functionality to be implemented.");
+  }
 
   if (!event) {
     return (
@@ -90,31 +99,18 @@ const EventDetail = () => {
         </div>
       </div>
 
-      {/* Certificate */}
-      {event.certificate && (
-        <div className="bg-gray-50 p-4 rounded-md border">
-          <p className="text-gray-600 text-sm mb-1">Certificate</p>
-          <a
-            href={event.certificate}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:underline break-all"
-          >
-            View Certificate
-          </a>
-        </div>
-      )}
 
-      {/* Button */}
-      <div className="text-left">
+      {/* Buttons */}
+      <div className="flex space-x-4 mt-4">
+        {/* Register / Event Button */}
         <button
           onClick={handleSubmit}
           className={`px-6 py-2 font-semibold rounded-md transition
-            ${
-              isLogged && !isAlreadyParticipant && !isPastEvent
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-400 text-gray-700 cursor-not-allowed"
-            }`}
+      ${
+        isLogged && !isAlreadyParticipant && !isPastEvent
+          ? "bg-blue-600 text-white hover:bg-blue-700"
+          : "bg-gray-400 text-gray-700 cursor-not-allowed"
+      }`}
           disabled={!isLogged || isAlreadyParticipant || isPastEvent}
         >
           {isPastEvent
@@ -123,6 +119,23 @@ const EventDetail = () => {
             ? "Already Registered"
             : "Register"}
         </button>
+
+        {/* Certificate Button */}
+        {event.present && event.certificate ? (
+          <button
+            onClick={handleDownloadCertificate} // your download handler
+            className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition"
+          >
+            Download Certificate
+          </button>
+        ) : (
+          <button
+            disabled
+            className="px-6 py-2 font-normal text-gray-500 bg-gray-200 rounded-md cursor-not-allowed"
+          >
+            Certificate Not Available
+          </button>
+        )}
       </div>
     </div>
   );

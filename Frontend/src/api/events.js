@@ -19,7 +19,7 @@ export const eventRegister = async (id, token) => {
   try {
     const response = await axios.post(
       `http://localhost:3030/event/${id}/register`,
-      {}, // body is empty
+      {},
       {
         headers: {
           Authorization: `Bearer ${token}`,

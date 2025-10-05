@@ -18,10 +18,8 @@ const EventProvider = ({ children }) => {
       try {
         const tokenData = JSON.parse(localStorage.getItem("authCredentials"));
         if (!tokenData) return;
-
         const token = tokenData.token;
         const data = await allEvents(token);
-
         setEvents(data);
 
         // Build map

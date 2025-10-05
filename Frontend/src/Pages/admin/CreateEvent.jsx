@@ -44,7 +44,6 @@ const CreateEvent = () => {
       
       const token = JSON.parse(localStorage.getItem("authCredentials")).token;
       const response = await upload(eventDetails, token);
-      console.log("Submitted:", response);
       alert("Event created successfully");
       setEventsMap((prev) => new Map(prev).set(response._id, response));
       setEvents((prev) => [...prev, response]);
